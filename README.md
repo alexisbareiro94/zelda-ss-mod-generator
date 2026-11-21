@@ -65,3 +65,4 @@ python3 generator.py --damage 2.5 --speed 1.5 --heal 0.5 --zip mi_mod.zip
 # zelda-ss-mod-generator
 # zelda-ss-mod-generator
 # zelda-ss-mod-generator
+# zelda-ss-mod-generator
