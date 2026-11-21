@@ -63,3 +63,4 @@ python3 generator.py --damage 2.5 --speed 1.5 --heal 0.5 --zip mi_mod.zip
 3. En la descripción, pega el link a tu **GitHub Pages** para que cualquier persona pueda crear su propia combinación personalizada en segundos.
 # zelda-ss-mod-generator
 # zelda-ss-mod-generator
+# zelda-ss-mod-generator
