@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skyward Sword HD (1.0.1) — Hard Mode Mod Generator</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --card-2: #1c222b;
+      --border: #30363d;
+      --gold: #e3b341;
+      --gold-dim: #b0882b;
+      --sky: #58a6ff;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --danger: #f85149;
+      --ok: #3fb950;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: radial-gradient(circle at top, #182232 0%, var(--bg) 55%);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 18px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 1.65rem;
+      color: var(--gold);
+      letter-spacing: 0.2px;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .badge {
+      font-size: 0.78rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    .lang-toggle {
+      display: flex;
+      gap: 6px;
+      background: var(--card);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-toggle button {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .lang-toggle button.active {
+      background: var(--gold);
+      color: #0d1117;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+    .card h2 {
+      margin: 0 0 14px;
+      font-size: 1.08rem;
+      color: var(--gold);
+    }
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 10px;
+    }
+    .preset-btn {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+    .preset-btn:hover {
+      border-color: var(--gold);
+      transform: translateY(-1px);
+    }
+    .preset-btn.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+    .preset-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+    .preset-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .control-group {
+      margin-bottom: 20px;
+    }
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .control-label {
+      font-weight: 600;
+      font-size: 0.96rem;
+    }
+    .control-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--gold);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .hint {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .radio-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .radio-pill {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .radio-pill:has(input:checked) {
+      border-color: var(--gold);
+      background: rgba(227, 179, 65, 0.08);
+    }
+    .radio-pill input {
+      accent-color: var(--gold);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    th, td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    td.num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .btn-primary {
+      flex: 1;
+      min-width: 220px;
+      background: linear-gradient(180deg, #ecc04e 0%, #c99728 100%);
+      color: #0d1117;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .btn-primary:hover { filter: brightness(1.07); }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--sky); }
+    .warn-box {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: rgba(248, 81, 73, 0.12);
+      border: 1px solid rgba(248, 81, 73, 0.4);
+      color: #ffa198;
+      font-size: 0.88rem;
+    }
+    pre {
+      background: #0b0f14;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      color: #c9d1d9;
+      margin: 12px 0 0;
+    }
+    details summary {
+      cursor: pointer;
+      color: var(--sky);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .install-steps ol {
+      margin: 8px 0 0;
+      padding-left: 20px;
+      color: #c9d1d9;
+      font-size: 0.88rem;
+    }
+    .install-steps li { margin-bottom: 6px; }
+    code {
+      background: #0b0f14;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.84em;
+      color: #79c0ff;
+    }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 28px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 data-i18n="title">Skyward Sword HD — Generador de Modo Difícil</h1>
+        <p class="subtitle" data-i18n="subtitle">
+          Personaliza daño enemigo, velocidad de enemigos (60 FPS fluidos) y curación. Genera .pchtxt y .ips al instante en tu navegador.
+        </p>
+        <div class="badge-row">
+          <span class="badge">Switch v1.0.1</span>
+          <span class="badge">Title ID: 01002DA013484000</span>
+          <span class="badge">BID: 5441AF3C89F97E1D...</span>
+        </div>
+      </div>
+      <div class="lang-toggle">
+        <button id="lang-es" class="active" type="button">ES</button>
+        <button id="lang-en" type="button">EN</button>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2 data-i18n="presets_title">Presets rápidos</h2>
+      <div class="presets">
+        <button class="preset-btn" type="button" data-preset="normal_plus">
+          <div class="preset-title" data-i18n="p_normal_t">Normal+</div>
+          <div class="preset-desc" data-i18n="p_normal_d">Daño ×1.5 · Enemigos 1.2× · Cura 100%</div>
+        </button>
+        <button class="preset-btn" type="button" data-preset="hard">
+          <div class="preset-title" data-i18n="p_hard_t">Difícil</div>
+          <div class="preset-desc" data-i18n="p_hard_d">Daño ×2.0 · Enemigos 1.35× · Cura −50%</div>
+        </button>
+        <button class="preset-btn active" type="button" data-preset="heroic">
+          <div class="preset-title" data-i18n="p_heroic_t">Heroico (Recomendado)</div>
+          <div class="preset-desc" data-i18n="p_heroic_d">Daño ×2.5 · Enemigos 1.5× · Cura −50%</div>
+        </button>
+        <button class="preset-btn" type="button" data-preset="nightmare">
+          <div class="preset-title" data-i18n="p_night_t">Pesadilla</div>
+          <div class="preset-desc" data-i18n="p_night_d">Daño ×3.0 · Enemigos 1.8× · Cura −50%</div>
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="custom_title">Configuración personalizada</h2>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label" data-i18n="dmg_label">Multiplicador de daño enemigo</span>
+          <span class="control-value" id="dmg-val">×2.5</span>
+        </div>
+        <input type="range" id="dmg-slider" min="1" max="4" step="0.25" value="2.5" />
+        <div class="hint" data-i18n="dmg_hint">
+          Multiplica el daño que recibe Link (se acumula con el ×2 del Modo Héroe). Nunca afecta a curaciones.
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label" data-i18n="spd_label">Velocidad de enemigos (movimiento, ataques e IA)</span>
+          <span class="control-value" id="spd-val">1.50×</span>
+        </div>
+        <input type="range" id="spd-slider" min="1" max="2" step="0.05" value="1.5" />
+        <div class="hint" data-i18n="spd_hint">
+          Acelera únicamente a los enemigos a 60 FPS fluidos. Link, NPCs, cámara y físicas del mundo se mantienen a 1.0×.
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-header">
+          <span class="control-label" data-i18n="heal_label">Curación (corazones, pociones, hadas, sillas)</span>
+          <span class="control-value" id="heal-val">50% (−50%)</span>
+        </div>
+        <div class="radio-row">
+          <label class="radio-pill">
+            <input type="radio" name="heal" value="0.5" checked />
+            <span data-i18n="heal_50">Reducida al 50% (1 cor. → ½, Poción Roja 8 → 4)</span>
+          </label>
+          <label class="radio-pill">
+            <input type="radio" name="heal" value="1.0" />
+            <span data-i18n="heal_100">Normal (100%)</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="preview_title">Vista previa en juego</h2>
+      <div class="grid-2">
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="th_hit">Ataque enemigo</th>
+                <th data-i18n="th_orig">Original</th>
+                <th data-i18n="th_new">Con mod</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="hit_light">Enemigo común</td>
+                <td>½ ♥</td>
+                <td class="num" id="prev-hit-2">1¼ ♥</td>
+              </tr>
+              <tr>
+                <td data-i18n="hit_med">Enemigo fuerte</td>
+                <td>1 ♥</td>
+                <td class="num" id="prev-hit-4">2½ ♥</td>
+              </tr>
+              <tr>
+                <td data-i18n="hit_heavy">Golpe pesado / Jefe</td>
+                <td>2 ♥</td>
+                <td class="num" id="prev-hit-8">5 ♥</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="th_heal">Fuente de curación</th>
+                <th data-i18n="th_orig">Original</th>
+                <th data-i18n="th_new">Con mod</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="heal_heart">Corazón / Silla</td>
+                <td>1 ♥</td>
+                <td class="num" id="prev-heal-4">½ ♥</td>
+              </tr>
+              <tr>
+                <td data-i18n="heal_fairy">Hada</td>
+                <td>6 ♥</td>
+                <td class="num" id="prev-heal-24">3 ♥</td>
+              </tr>
+              <tr>
+                <td data-i18n="heal_potion">Poción Roja</td>
+                <td>8 ♥</td>
+                <td class="num" id="prev-heal-32">4 ♥</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="dl_title">Formato y descarga</h2>
+      <div class="radio-row">
+        <label class="radio-pill">
+          <input type="radio" name="fmt" value="both" checked />
+          <span data-i18n="fmt_both">Ambos (.pchtxt + .ips) en carpetas separadas</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="fmt" value="pchtxt" />
+          <span data-i18n="fmt_pch">Solo Emulador (.pchtxt — Eden / Yuzu / Ryujinx)</span>
+        </label>
+        <label class="radio-pill">
+          <input type="radio" name="fmt" value="ips" />
+          <span data-i18n="fmt_ips">Solo Switch real (.ips — Atmosphère)</span>
+        </label>
+      </div>
+
+      <div id="warn-noop" class="warn-box" data-i18n="warn_noop">
+        Todos los valores están en normal (1.0×). Sube daño, velocidad o reduce la curación para generar un parche.
+      </div>
+
+      <div class="actions">
+        <button id="btn-download" class="btn-primary" type="button" data-i18n="btn_dl">
+          Descargar Mod (.zip)
+        </button>
+        <button id="btn-copy" class="btn-secondary" type="button" data-i18n="btn_copy">
+          Copiar .pchtxt
+        </button>
+      </div>
+
+      <details style="margin-top: 14px;">
+        <summary data-i18n="show_code">Ver código .pchtxt generado</summary>
+        <pre id="code-preview"></pre>
+      </details>
+    </section>
+
+    <section class="card install-steps">
+      <h2 data-i18n="inst_title">Cómo instalar</h2>
+      <div class="grid-2">
+        <div>
+          <strong data-i18n="inst_emu_h">Emuladores (Eden / Yuzu / Ryujinx)</strong>
+          <ol>
+            <li data-i18n="inst_emu_1">Asegúrate de tener instalada la actualización <code>1.0.1</code> del juego.</li>
+            <li data-i18n="inst_emu_2">Clic derecho al juego → <em>Open Mod Data Location</em> (o <em>Open Mods Directory</em>).</li>
+            <li data-i18n="inst_emu_3">Copia la carpeta <code>SSHD_HardMode_1.0.1</code> (que contiene <code>exefs/1.0.1.pchtxt</code>) dentro.</li>
+            <li data-i18n="inst_emu_4">Verifica en Propiedades que el mod esté activado y arranca el juego.</li>
+          </ol>
+        </div>
+        <div>
+          <strong data-i18n="inst_sw_h">Nintendo Switch (Atmosphère)</strong>
+          <ol>
+            <li data-i18n="inst_sw_1">Requiere <em>Skyward Sword HD</em> actualizado a la versión <code>1.0.1</code>.</li>
+            <li data-i18n="inst_sw_2">Copia la carpeta <code>atmosphere/</code> del paquete <code>.ips</code> en la raíz de tu tarjeta SD.</li>
+            <li data-i18n="inst_sw_3">Ruta final: <code>sd:/atmosphere/exefs_patches/SSHD_HardMode/5441AF3C...ips</code>.</li>
+            <li data-i18n="inst_sw_4">Inicia el juego normalmente desde el menú HOME.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <footer data-i18n="footer">
+      Generado 100% en tu navegador sin archivos propietarios de Nintendo. Solo compatible con Skyward Sword HD v1.0.1.
+    </footer>
+  </div>
+
+  <script src="patch_engine.js"></script>
+  <script>
+    (function () {
+      const I18N = {
+        es: {
+          title: "Skyward Sword HD — Generador de Modo Difícil",
+          subtitle: "Personaliza daño enemigo, velocidad de enemigos (60 FPS fluidos) y curación. Genera .pchtxt y .ips al instante en tu navegador.",
+          presets_title: "Presets rápidos",
+          p_normal_t: "Normal+",
+          p_normal_d: "Daño ×1.5 · Enemigos 1.2× · Cura 100%",
+          p_hard_t: "Difícil",
+          p_hard_d: "Daño ×2.0 · Enemigos 1.35× · Cura −50%",
+          p_heroic_t: "Heroico (Recomendado)",
+          p_heroic_d: "Daño ×2.5 · Enemigos 1.5× · Cura −50%",
+          p_night_t: "Pesadilla",
+          p_night_d: "Daño ×3.0 · Enemigos 1.8× · Cura −50%",
+          custom_title: "Configuración personalizada",
+          dmg_label: "Multiplicador de daño enemigo",
+          dmg_hint: "Multiplica el daño que recibe Link (se acumula con el ×2 del Modo Héroe). Nunca afecta a curaciones.",
+          spd_label: "Velocidad de enemigos (movimiento, ataques e IA)",
+          spd_hint: "Acelera únicamente a los enemigos a 60 FPS fluidos. Link, NPCs, cámara y físicas del mundo se mantienen a 1.0×.",
+          heal_label: "Curación (corazones, pociones, hadas, sillas)",
+          heal_50: "Reducida al 50% (1 cor. → ½, Poción Roja 8 → 4)",
+          heal_100: "Normal (100%)",
+          preview_title: "Vista previa en juego",
+          th_hit: "Ataque enemigo",
+          th_heal: "Fuente de curación",
+          th_orig: "Original",
+          th_new: "Con mod",
+          hit_light: "Enemigo común",
+          hit_med: "Enemigo fuerte",
+          hit_heavy: "Golpe pesado / Jefe",
+          heal_heart: "Corazón / Silla",
+          heal_fairy: "Hada",
+          heal_potion: "Poción Roja",
+          dl_title: "Formato y descarga",
+          fmt_both: "Ambos (.pchtxt + .ips) en carpetas separadas",
+          fmt_pch: "Solo Emulador (.pchtxt — Eden / Yuzu / Ryujinx)",
+          fmt_ips: "Solo Switch real (.ips — Atmosphère)",
+          warn_noop: "Todos los valores están en normal (1.0×). Sube daño, velocidad o reduce la curación para generar un parche.",
+          btn_dl: "Descargar Mod (.zip)",
+          btn_copy: "Copiar .pchtxt",
+          copied: "¡Copiado!",
+          show_code: "Ver código .pchtxt generado",
+          inst_title: "Cómo instalar",
+          inst_emu_h: "Emuladores (Eden / Yuzu / Ryujinx)",
+          inst_emu_1: "Asegúrate de tener instalada la actualización <code>1.0.1</code> del juego.",
+          inst_emu_2: "Clic derecho al juego → <em>Open Mod Data Location</em> (o <em>Open Mods Directory</em>).",
+          inst_emu_3: "Copia la carpeta <code>SSHD_HardMode_1.0.1</code> (que contiene <code>exefs/1.0.1.pchtxt</code>) dentro.",
+          inst_emu_4: "Verifica en Propiedades que el mod esté activado y arranca el juego.",
+          inst_sw_h: "Nintendo Switch (Atmosphère)",
+          inst_sw_1: "Requiere <em>Skyward Sword HD</em> actualizado a la versión <code>1.0.1</code>.",
+          inst_sw_2: "Copia la carpeta <code>atmosphere/</code> del paquete <code>.ips</code> en la raíz de tu tarjeta SD.",
+          inst_sw_3: "Ruta final: <code>sd:/atmosphere/exefs_patches/SSHD_HardMode/5441AF3C...ips</code>.",
+          inst_sw_4: "Inicia el juego normalmente desde el menú HOME.",
+          footer: "Generado 100% en tu navegador sin archivos propietarios de Nintendo. Solo compatible con Skyward Sword HD v1.0.1.",
+        },
+        en: {
+          title: "Skyward Sword HD — Custom Hard Mode Generator",
+          subtitle: "Customize enemy damage, smooth 60 FPS enemy speed, and healing reduction. Generates .pchtxt and .ips right in your browser.",
+          presets_title: "Quick Presets",
+          p_normal_t: "Normal+",
+          p_normal_d: "Damage ×1.5 · Enemies 1.2× · Heal 100%",
+          p_hard_t: "Hard",
+          p_hard_d: "Damage ×2.0 · Enemies 1.35× · Heal −50%",
+          p_heroic_t: "Heroic (Recommended)",
+          p_heroic_d: "Damage ×2.5 · Enemies 1.5× · Heal −50%",
+          p_night_t: "Nightmare",
+          p_night_d: "Damage ×3.0 · Enemies 1.8× · Heal −50%",
+          custom_title: "Custom Settings",
+          dmg_label: "Enemy Damage Multiplier",
+          dmg_hint: "Multiplies damage taken by Link (stacks with Hero Mode's 2×). Never affects healing.",
+          spd_label: "Enemy Speed (movement, attacks & AI)",
+          spd_hint: "Speeds up enemies only at smooth 60 FPS. Link, NPCs, camera and world physics stay at 1.0×.",
+          heal_label: "Healing (Hearts, Potions, Fairies, Stools)",
+          heal_50: "Reduced to 50% (1 heart → ½, Red Potion 8 → 4)",
+          heal_100: "Normal (100%)",
+          preview_title: "In-Game Preview",
+          th_hit: "Enemy Attack",
+          th_heal: "Healing Source",
+          th_orig: "Vanilla",
+          th_new: "Modded",
+          hit_light: "Common enemy",
+          hit_med: "Strong enemy",
+          hit_heavy: "Heavy / Boss hit",
+          heal_heart: "Heart / Stool",
+          heal_fairy: "Fairy",
+          heal_potion: "Red Potion",
+          dl_title: "Output Format & Download",
+          fmt_both: "Both (.pchtxt + .ips) in separate folders",
+          fmt_pch: "Emulator only (.pchtxt — Eden / Yuzu / Ryujinx)",
+          fmt_ips: "Real Switch only (.ips — Atmosphère)",
+          warn_noop: "All values are set to vanilla (1.0×). Change at least one setting to generate a patch.",
+          btn_dl: "Download Mod (.zip)",
+          btn_copy: "Copy .pchtxt",
+          copied: "Copied!",
+          show_code: "Preview generated .pchtxt",
+          inst_title: "How to Install",
+          inst_emu_h: "Emulators (Eden / Yuzu / Ryujinx)",
+          inst_emu_1: "Make sure game update <code>1.0.1</code> is installed and enabled.",
+          inst_emu_2: "Right-click the game → <em>Open Mod Data Location</em> (or <em>Open Mods Directory</em>).",
+          inst_emu_3: "Copy the <code>SSHD_HardMode_1.0.1</code> folder (containing <code>exefs/1.0.1.pchtxt</code>) inside.",
+          inst_emu_4: "Make sure the mod is enabled in Properties and launch the game.",
+          inst_sw_h: "Nintendo Switch (Atmosphère)",
+          inst_sw_1: "Requires <em>Skyward Sword HD</em> updated to version <code>1.0.1</code>.",
+          inst_sw_2: "Copy the <code>atmosphere/</code> folder from the <code>.ips</code> package to your SD card root.",
+          inst_sw_3: "Final path: <code>sd:/atmosphere/exefs_patches/SSHD_HardMode/5441AF3C...ips</code>.",
+          inst_sw_4: "Launch the game normally from the HOME menu.",
+          footer: "Generated 100% locally in your browser with zero Nintendo copyrighted files. For Skyward Sword HD v1.0.1 only.",
+        },
+      };
+
+      const PRESETS = {
+        normal_plus: { damage: 1.5, speed: 1.2, heal: 1.0 },
+        hard:        { damage: 2.0, speed: 1.35, heal: 0.5 },
+        heroic:      { damage: 2.5, speed: 1.5, heal: 0.5 },
+        nightmare:   { damage: 3.0, speed: 1.8, heal: 0.5 },
+      };
+
+      let lang = "es";
+      const dmgSlider = document.getElementById("dmg-slider");
+      const spdSlider = document.getElementById("spd-slider");
+      const dmgVal = document.getElementById("dmg-val");
+      const spdVal = document.getElementById("spd-val");
+      const healVal = document.getElementById("heal-val");
+      const codePreview = document.getElementById("code-preview");
+      const btnDownload = document.getElementById("btn-download");
+      const btnCopy = document.getElementById("btn-copy");
+      const warnNoop = document.getElementById("warn-noop");
+
+      function formatQuarters(q) {
+        const whole = Math.floor(q / 4);
+        const rem = q % 4;
+        const frac = rem === 0 ? "" : rem === 1 ? "¼" : rem === 2 ? "½" : "¾";
+        if (whole === 0) return (frac || "0") + " ♥";
+        return whole + frac + " ♥";
+      }
+
+      function getOpts() {
+        const damage = parseFloat(dmgSlider.value);
+        const speed = parseFloat(spdSlider.value);
+        const heal = parseFloat(document.querySelector('input[name="heal"]:checked').value);
+        const fmt = document.querySelector('input[name="fmt"]:checked').value;
+        return { damage, speed, heal, fmt };
+      }
+
+      function applyLang(newLang) {
+        lang = newLang;
+        document.documentElement.lang = lang;
+        document.getElementById("lang-es").classList.toggle("active", lang === "es");
+        document.getElementById("lang-en").classList.toggle("active", lang === "en");
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (I18N[lang][key] !== undefined) {
+            el.innerHTML = I18N[lang][key];
+          }
+        });
+        updateUI();
+      }
+
+      function updateUI() {
+        const { damage, speed, heal } = getOpts();
+        dmgVal.textContent = `×${damage.toFixed(damage % 1 === 0 ? 1 : 2).replace(/0$/, "")}`;
+        spdVal.textContent = `${speed.toFixed(2)}×`;
+        healVal.textContent = heal === 0.5 ? "50% (−50%)" : "100%";
+
+        // Update live damage preview (exact integer formula used by ARM64 hook)
+        let num = Math.round(damage * 4), den = 4;
+        while (den > 1 && num % 2 === 0) { num /= 2; den /= 2; }
+        const shift = den === 1 ? 0 : den === 2 ? 1 : 2;
+        const calcDmg = (base) => (damage > 1.0 ? ((base * num) >> shift) : base);
+
+        document.getElementById("prev-hit-2").textContent = formatQuarters(calcDmg(2));
+        document.getElementById("prev-hit-4").textContent = formatQuarters(calcDmg(4));
+        document.getElementById("prev-hit-8").textContent = formatQuarters(calcDmg(8));
+
+        const calcHeal = (base) => (heal === 0.5 ? (base >> 1) : base);
+        document.getElementById("prev-heal-4").textContent = formatQuarters(calcHeal(4));
+        document.getElementById("prev-heal-24").textContent = formatQuarters(calcHeal(24));
+        document.getElementById("prev-heal-32").textContent = formatQuarters(calcHeal(32));
+
+        const noop = damage === 1.0 && speed === 1.0 && heal === 1.0;
+        warnNoop.style.display = noop ? "block" : "none";
+        btnDownload.disabled = noop;
+        btnCopy.disabled = noop;
+
+        if (!noop) {
+          const res = SSHDPatchEngine.generatePatches({ damage, speed, heal });
+          codePreview.textContent = res.pchtxt;
+        } else {
+          codePreview.textContent = "";
+        }
+      }
+
+      document.querySelectorAll(".preset-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".preset-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const p = PRESETS[btn.dataset.preset];
+          dmgSlider.value = p.damage;
+          spdSlider.value = p.speed;
+          document.querySelector(`input[name="heal"][value="${p.heal.toFixed(1)}"]`).checked = true;
+          updateUI();
+        });
+      });
+
+      [dmgSlider, spdSlider].forEach((el) => {
+        el.addEventListener("input", () => {
+          document.querySelectorAll(".preset-btn").forEach((b) => b.classList.remove("active"));
+          updateUI();
+        });
+      });
+
+      document.querySelectorAll('input[name="heal"]').forEach((el) => {
+        el.addEventListener("change", () => {
+          document.querySelectorAll(".preset-btn").forEach((b) => b.classList.remove("active"));
+          updateUI();
+        });
+      });
+
+      document.getElementById("lang-es").addEventListener("click", () => applyLang("es"));
+      document.getElementById("lang-en").addEventListener("click", () => applyLang("en"));
+
+      btnCopy.addEventListener("click", async () => {
+        const { damage, speed, heal } = getOpts();
+        const res = SSHDPatchEngine.generatePatches({ damage, speed, heal });
+        await navigator.clipboard.writeText(res.pchtxt);
+        const orig = I18N[lang].btn_copy;
+        btnCopy.textContent = I18N[lang].copied;
+        setTimeout(() => { btnCopy.textContent = orig; }, 1400);
+      });
+
+      btnDownload.addEventListener("click", () => {
+        const { damage, speed, heal, fmt } = getOpts();
+        const res = SSHDPatchEngine.generatePatches({ damage, speed, heal });
+        const tag = `Dmg${damage}x_Spd${speed}x_Heal${Math.round(heal * 100)}`;
+        const installTxt = [
+          "The Legend of Zelda: Skyward Sword HD (Switch v1.0.1) — Hard Mode Mod",
+          `Settings: Damage x${damage} | Enemy Speed ${speed}x | Healing ${Math.round(heal * 100)}%`,
+          `Title ID: ${res.titleId}`,
+          `Build ID: ${res.buildId}`,
+          "",
+          "=== EMULATORS (Eden / Yuzu / Ryujinx) ===",
+          "Copy the 'SSHD_HardMode_1.0.1' folder into your emulator's mod directory for 01002DA013484000.",
+          "(Right-click the game -> Open Mod Data Location / Open Mods Directory).",
+          "",
+          "=== NINTENDO SWITCH (Atmosphere) ===",
+          "Copy the 'atmosphere' folder to the root of your SD card.",
+          `Final path: sd:/atmosphere/exefs_patches/SSHD_HardMode/${res.buildId}.ips`,
+          "",
+          "NOTE: Requires game update 1.0.1. Do NOT mix .pchtxt and .ips in the same folder.",
+          "",
+        ].join("\n");
+
+        const entries = [];
+        if (fmt === "pchtxt") {
+          entries.push({ name: "SSHD_HardMode_1.0.1/exefs/1.0.1.pchtxt", data: res.pchtxt });
+          entries.push({ name: "INSTALL.txt", data: installTxt });
+        } else if (fmt === "ips") {
+          entries.push({ name: `atmosphere/exefs_patches/SSHD_HardMode/${res.buildId}.ips`, data: res.ips });
+          entries.push({ name: "INSTALL.txt", data: installTxt });
+        } else {
+          entries.push({ name: "Emulator_pchtxt/SSHD_HardMode_1.0.1/exefs/1.0.1.pchtxt", data: res.pchtxt });
+          entries.push({ name: `Switch_Atmosphere_ips/atmosphere/exefs_patches/SSHD_HardMode/${res.buildId}.ips`, data: res.ips });
+          entries.push({ name: "INSTALL.txt", data: installTxt });
+        }
+
+        const zipBytes = SSHDPatchEngine.buildZip(entries);
+        const blob = new Blob([zipBytes], { type: "application/zip" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `SSHD_HardMode_1.0.1_${tag}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      updateUI();
+    })();
+  </script>
+</body>
+</html>
